@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificates - Certificate Management</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f4f6f9;
+            font-family: Arial, sans-serif;
+        }
+        .table-container {
+            margin-top: 30px;
+        }
+        .btn-custom {
+            background-color: #007bff;
+            color: white;
+            margin-bottom: 15px;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+        }
+        .btn-warning {
+            background-color: #ffc107;
+        }
+        .btn-success {
+            background-color: #28a745;
+        }
+        .btn-info {
+            background-color: #17a2b8;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Certificate Management</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="/home">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/certificates">Certificates</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/about">About</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/contact">Contact</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/logout">Logout</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container table-container">
+    <a href="/certificates/new" class="btn btn-custom">Add New Certificate</a>
+    <table class="table table-bordered" id="certificateTable">
+        <thead>
+            <tr>
+                <th>Certificate Name</th>
+                <th>Issued By</th>
+                <th>Valid From</th>
+                <th>Valid To</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Certificates will be dynamically populated here -->
+        </tbody>
+    </table>
+</div>
+
+<script>
+    // Load certificates from localStorage
+    function loadCertificates() {
+        const certificates = JSON.parse(localStorage.getItem('certificates')) || [];
+        const tableBody = document.querySelector('#certificateTable tbody');
+        tableBody.innerHTML = ''; // Clear existing rows
+
+        certificates.forEach((certificate, index) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${certificate.name}</td>
+                <td>${certificate.issuedBy}</td>
+                <td>${certificate.validFrom}</td>
+                <td>${certificate.validTo}</td>
+                <td>
+                    <button class="btn btn-info" onclick="viewCertificate(${index})">View</button>
+                    <button class="btn btn-success" onclick="downloadCertificate(${index})">Download</button>
+                    <button class="btn btn-warning" onclick="editCertificate(${index})">Edit</button>
+                    <button class="btn btn-danger" onclick="deleteCertificate(${index})">Delete</button>
+                </td>
+            `;
+            tableBody.appendChild(row);
+        });
+    }
+
+    // View a certificate
+    function viewCertificate(index) {
+        const certificates = JSON.parse(localStorage.getItem('certificates')) || [];
+        const certificate = certificates[index];
+        alert(`Viewing Certificate:
+        Name: ${certificate.name}
+        Issued By: ${certificate.issuedBy}
+        Valid From: ${certificate.validFrom}
+        Valid To: ${certificate.validTo}`);
+    }
+
+    // Download a random HTML file with an image
+    function downloadCertificate(index) {
+        const certificates = JSON.parse(localStorage.getItem('certificates')) || [];
+        const certificate = certificates[index];
+
+        // List of images
+		const images = [
+		    "images/aws.jpg",       // AWS image
+		    "images/redhat.png",    // Red Hat image
+		    "images/azure.png",     // Azure image
+		    "images/sales.png" // Salesforce image
+		];
+
+        // Randomly select an image
+        const randomImage = images[Math.floor(Math.random() * images.length)];
+
+        // Create HTML content
+        const content = `
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>${certificate.name}</title>
+        </head>
+        <body>
+            <h1>Certificate Details</h1>
+            <p><strong>Certificate Name:</strong> ${certificate.name}</p>
+            <p><strong>Issued By:</strong> ${certificate.issuedBy}</p>
+            <p><strong>Valid From:</strong> ${certificate.validFrom}</p>
+            <p><strong>Valid To:</strong> ${certificate.validTo}</p>
+            <img src="${randomImage}" alt="Certificate Logo" style="width:500px;height:auto;" />
+        </body>
+        </html>
+        `;
+
+        const blob = new Blob([content], { type: 'text/html' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `${certificate.name}.html`;
+        a.click();
+    }
+
+    // Delete a certificate
+    function deleteCertificate(index) {
+        const certificates = JSON.parse(localStorage.getItem('certificates')) || [];
+        certificates.splice(index, 1); // Remove the selected certificate
+        localStorage.setItem('certificates', JSON.stringify(certificates));
+        loadCertificates(); // Reload the table
+    }
+
+    // Edit a certificate
+    function editCertificate(index) {
+        const certificates = JSON.parse(localStorage.getItem('certificates')) || [];
+        const certificate = certificates[index];
+
+        // Save the certificate in localStorage for the edit page
+        localStorage.setItem('editingCertificate', JSON.stringify({ index, ...certificate }));
+
+        // Redirect to edit.html (no need for an ID in the URL)
+        window.location.href = 'edit_certificate.html';
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+        loadCertificates(); // Load certificates on page load
+    });
+</script>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

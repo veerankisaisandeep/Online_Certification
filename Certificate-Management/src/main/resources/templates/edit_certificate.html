@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Certificate</title>
+    <style>
+        /* General Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+        }
+
+        h2 {
+            text-align: center;
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-size: 16px;
+            font-weight: 500;
+            color: #555;
+            margin-bottom: 8px;
+        }
+
+        input[type="text"],
+        input[type="file"] {
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="file"]:focus {
+            border-color: #7e9cfa;
+        }
+
+        button[type="submit"] {
+            padding: 12px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        button[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        button[type="submit"]:active {
+            background-color: #388e3c;
+        }
+
+        input[type="file"] {
+            background-color: #f7f7f7;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        input[type="file"]:hover {
+            background-color: #e1e1e1;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px;
+            }
+
+            h2 {
+                font-size: 20px;
+            }
+
+            button[type="submit"] {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Edit Certificate</h2>
+        <form action="/certificates/edit/${certificate.id}" method="post" enctype="multipart/form-data">
+            <!-- Hidden method to handle PUT if needed (optional) -->
+            <input type="hidden" name="_method" value="put"> 
+
+            <div class="form-group">
+                <label for="name">Certificate Name</label>
+                <input type="text" id="name" name="name" value="${certificate.name}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="issuingOrganisation">Issuing Organization</label>
+                <input type="text" id="issuingOrganisation" name="issuingOrganisation" value="${certificate.issuingOrganisation}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="validFrom">Valid From</label>
+                <input type="text" id="validFrom" name="validFrom" value="${certificate.validFrom}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="validTo">Valid To</label>
+                <input type="text" id="validTo" name="validTo" value="${certificate.validTo}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="file">Upload New File (optional)</label>
+                <input type="file" id="file" name="file"> <!-- Ensure the correct field name 'file' -->
+            </div>
+
+            <div class="form-group">
+                <button type="submit">Update Certificate</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

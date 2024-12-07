@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Certificate - Certificate Management</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f4f6f9;
+            font-family: Arial, sans-serif;
+        }
+        .form-container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 30px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+        }
+        .btn-custom {
+            background-color: #007bff;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Certificate Management</a>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="/certificates">Back to Certificates</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div class="form-container">
+    <h3>Add New Certificate</h3>
+    <form id="certificateForm">
+        <div class="form-group">
+            <label for="certificateName">Certificate Name</label>
+            <input type="text" class="form-control" id="certificateName" required>
+        </div>
+        <div class="form-group">
+            <label for="issuedBy">Issued By</label>
+            <input type="text" class="form-control" id="issuedBy" required>
+        </div>
+        <div class="form-group">
+            <label for="validFrom">Valid From</label>
+            <input type="date" class="form-control" id="validFrom" required>
+        </div>
+        <div class="form-group">
+            <label for="validTo">Valid To</label>
+            <input type="date" class="form-control" id="validTo" required>
+        </div>
+        <div class="form-group">
+            <label for="fileUpload">Upload Certificate</label>
+            <input type="file" class="form-control-file" id="fileUpload" accept=".pdf,.jpg,.png" required>
+        </div>
+        <button type="submit" class="btn btn-custom btn-block">Submit</button>
+    </form>
+</div>
+
+<script>
+    document.getElementById("certificateForm").addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const fileInput = document.getElementById("fileUpload");
+        const file = fileInput.files[0];
+
+        if (!file) {
+            alert("Please upload a file.");
+            return;
+        }
+
+        const certificate = {
+            name: document.getElementById("certificateName").value,
+            issuedBy: document.getElementById("issuedBy").value,
+            validFrom: document.getElementById("validFrom").value,
+            validTo: document.getElementById("validTo").value,
+            fileName: file.name // Storing file name temporarily
+        };
+
+        // Store the certificate in localStorage
+        const certificates = JSON.parse(localStorage.getItem("certificates")) || [];
+        certificates.push(certificate);
+        localStorage.setItem("certificates", JSON.stringify(certificates));
+
+        alert("Certificate added successfully!");
+        window.location.href = "/certificates"; // Redirect to certificates page
+    });
+</script>
+
+</body>
+</html>
